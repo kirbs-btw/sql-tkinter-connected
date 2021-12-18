@@ -39,7 +39,6 @@ def printEmployees(company, frame):
     pass
 
 def printTable(frame, table):
-    #test scroll bar filling it with random stuff
     print(table)
     f = 0
     for i in table:
@@ -48,6 +47,54 @@ def printTable(frame, table):
         tk.Label(frame, text=i[1], justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[2], justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[3], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
+        
+def printTableProjects(frame):
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
+    command = f"SELECT * FROM project"
+    table = cur.execute(command).fetchall()
+    conn.close()
+    f = 0
+    for i in table:
+        f += 1
+        tk.Label(frame, text=i[1], justify="left").grid(row=f, column=1, pady=10, padx=10, sticky="w")
+        tk.Label(frame, text=i[2], justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
+        tk.Label(frame, text=i[3], justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
+        tk.Label(frame, text=i[0], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
+        tk.Button(frame, text = "Choose Project", justify="left", command = lambda m = i[0]: chooseProject(m)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
+
+def chooseProject(projectId):
+    
+    pass
+        
+def openProjectsWindow():
+    root = tk.Tk()
+    
+    canvas = tk.Canvas(root, width=750, height=450, bg='#ffffff')
+    canvas.pack()
+    
+    table = tk.Canvas(canvas, bg="black")
+    table.place(relwidth=1, relheight=1, anchor='nw')
+    # create a main frame
+    mainFrame = tk.Frame(table, bg="#ffffff")
+    mainFrame.pack(fill='both', expand=1)
+    # canvas
+    canvas1 = tk.Canvas(mainFrame)
+    canvas1.pack(side='left', fill='both', expand=1)
+    # scrollbar
+    canvScroll = ttk.Scrollbar(mainFrame, orient='vertical', command=canvas1.yview)
+    canvScroll.pack(side='right', fill='y')
+    # cofig canvas
+    canvas1.configure(yscrollcommand=canvScroll.set)
+    canvas1.bind('<Configure>', lambda e: canvas1.configure(scrollregion=canvas1.bbox("all")))
+    # create another frame in canvas
+    frameScroll = tk.Frame(canvas1)
+    # add fram to window in canvas
+    canvas1.create_window((0, 0), window=frameScroll, anchor="nw")
+    
+    printTableProjects(frameScroll)
+    
+    root.mainloop()
 
 def mainWindow():
     root = tk.Tk()
@@ -73,14 +120,8 @@ def mainWindow():
 
     # drop down employee#####################
     # bsp list eig list wird abfrage einer sql tabelle
-    employeeList = ["echtes gold herstellen", "lustige witze sendung", "krasse schlitttschuhe"]
-    # Variable, die immer der gleichen Wert haben soll, wie das, was im Menü ausgewählt ist
-    selectedEmployee = tk.StringVar(canvas)
-    selectedEmployee.set(employeeList[0])
-
-    # Hier kommt das eigentliche Menü, wird mit dem fenster und der Variable ausgewaehlt verknüpft
-    employeeDropdown = tk.OptionMenu(root, selectedEmployee, *employeeList) 
-    employeeDropdown.place(relx=0.275, rely=0.15, relwidth=0.2, relheight=0.05, )
+    projectsWindowButton = tk.Button(canvas, command = lambda: openProjectsWindow(), text = "Choose project") 
+    projectsWindowButton.place(relx=0.275, rely=0.15, relwidth=0.2, relheight=0.05, )
     #############################################################
 
     #drop down Firma#####################
