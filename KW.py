@@ -3,7 +3,23 @@ from tkinter import ttk
 import sqlite3
 import os
 
+class selectProject:
+
+    def __init__(self, n):
+        self.id = n
+
+projectObj = selectProject(None)
+
 def getCompanyList():
+    """
+    gets the company list for the dropdown menu and other
+    applictions
+
+    used sql table is kw.sql
+
+    :return: company table as 2d array
+    """
+
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
     command = f"SELECT name FROM company"
@@ -13,18 +29,28 @@ def getCompanyList():
     return companyList
 
 def destroyWidget(frame):
-     widgets = frame.winfo_children()
-     for widget in widgets:
-         widget.destroy()
+    """
+    :param frame: frame = the frame where the children will be killed
+    :return: none - kills the children of frame
+    """
+
+    widgets = frame.winfo_children()
+    for widget in widgets:
+        widget.destroy()
     
 
 def printEmployees(company, frame):
+    """
+    :param company: company name to get the employees of the company
+    :param frame: frame where to display the information
+    :return: none it returns the information via the scrollbar in the frame
+    """
     destroyWidget(frame)
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
     companyName = str()
     
-    #cuts tring up input is weird
+    #cuts try to cut up - input is weird
     for i in company:
         if i == "(" or i == ")" or i == "," or i == "'":
             pass
@@ -39,6 +65,12 @@ def printEmployees(company, frame):
     pass
 
 def printTable(frame, table):
+    """
+    :param frame: frame where it puts the information
+    :param table: table with the information (table is 2d)
+    :return: Nothing - returns the values inside the scrollbar table
+    """
+
     print(table)
     f = 0
     for i in table:
@@ -48,7 +80,7 @@ def printTable(frame, table):
         tk.Label(frame, text=i[2], justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[3], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
         
-def printTableProjects(frame):
+def printTableProjects(frame, root):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
     command = f"SELECT * FROM project"
@@ -61,13 +93,34 @@ def printTableProjects(frame):
         tk.Label(frame, text=i[2], justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[3], justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[0], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
-        tk.Button(frame, text = "Choose Project", justify="left", command = lambda m = i[0]: chooseProject(m)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
+        tk.Button(frame, text = "Choose Project", justify="left", command = lambda m = i[0]: chooseProject(m, root)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
 
-def chooseProject(projectId):
-    
-    pass
+def chooseProject(projectId, root):
+    """
+
+    selected project id gets saved in projectObj for later use
+
+    :param projectId: id of the selected Project
+    :param root: root of the projects window so it can be closed
+
+    opens mainWindow again so you can select a company to do the project for you
+    """
+
+    projectObj.id = projectId
+    root.destroy()
+    print(projectObj.id)
+    mainWindow()
+
         
-def openProjectsWindow():
+def openProjectsWindow(root):
+    """
+    the projects window has the purpose to let the user select a project from the list
+
+    :param root: root of the previous window - destroys the previous window
+    :return: none - return is the window poping up
+    """
+
+    root.destroy()
     root = tk.Tk()
     
     canvas = tk.Canvas(root, width=750, height=450, bg='#ffffff')
@@ -92,11 +145,21 @@ def openProjectsWindow():
     # add fram to window in canvas
     canvas1.create_window((0, 0), window=frameScroll, anchor="nw")
     
-    printTableProjects(frameScroll)
+    printTableProjects(frameScroll, root)
     
     root.mainloop()
 
 def mainWindow():
+    """
+    main user interface
+    used to select companys and employees
+
+    also there is a secrete button behind the kw logo :) shhhht
+    password = kw
+
+    :return: none - return = window poping up for the user
+    """
+
     root = tk.Tk()
     root.title("[KW]")
     root.iconbitmap("gui/kw.ico")
@@ -120,7 +183,7 @@ def mainWindow():
 
     # drop down employee#####################
     # bsp list eig list wird abfrage einer sql tabelle
-    projectsWindowButton = tk.Button(canvas, command = lambda: openProjectsWindow(), text = "Choose project") 
+    projectsWindowButton = tk.Button(canvas, command = lambda: openProjectsWindow(root), text = "Choose project")
     projectsWindowButton.place(relx=0.275, rely=0.15, relwidth=0.2, relheight=0.05, )
     #############################################################
 
@@ -179,6 +242,14 @@ def mainWindow():
     root.mainloop()
 
 def login(entry, root):
+    """
+    checks if the password is correct
+
+    :param entry: password try entry = entry.get() so entry is a string here
+    :param root: root of the login window has to be killed if the password is right
+    :return: none - return in form of a new window poping up
+    """
+
     password = "kw"
     
     if entry == password:
@@ -194,6 +265,13 @@ def login(entry, root):
 #######################################
 
 def passwordDev():
+    """
+    creates login window for the development terminal
+    access only via correct password
+
+    :return: none - returns a login window
+    """
+
     root = tk.Tk()
     root.title("Password")
     root.iconbitmap("gui/kw.ico")
@@ -213,6 +291,11 @@ def passwordDev():
     root.mainloop()
 
 def executeSqlCommand(command):
+    """
+    :param command: sql command a string
+    :return: return is printed in the console by now
+    """
+
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
     table = cur.execute(command).fetchall()
@@ -222,6 +305,13 @@ def executeSqlCommand(command):
     pass
 
 def devWindow():
+    """
+    creates a development window with a sql terminal and other
+    useful elements - comming soon
+
+    :return: none - returns a window for the user
+    """
+
     root = tk.Tk()
     root.title("[KW]")
     root.iconbitmap("gui/kw.ico")
@@ -252,7 +342,7 @@ if __name__ == '__main__':
     # password to dev Window is = kw
     #devWindow()
 
-#Sql, py project - conect python GUI with sql data base
+#Sql, py project - connect python GUI with sql data base
 #
 #Bastian Lipka -
 
