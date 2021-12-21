@@ -292,6 +292,28 @@ def checkTable(table):
 
     pass
 
+def resourceTable():
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
+
+    resourceName = [
+        ["coal", 0.15],
+        ["diamond", 36000000],
+        ["silicon", 1.7],
+        ["Aluminium", 1.8],
+        ["Steel", 0.45],
+        ["Plastic", 0.0738],
+        ["Wood", 1.15],
+
+    ]
+
+    for i in resourceName:
+        command = f"INSERT INTO resource VALUES('{i[0]}', {i[1]})"
+        cur.execute(command)
+        conn.commit()
+        print(command)
+
+
 def delTable(table):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -317,6 +339,7 @@ def executeSqlCommand(command):
     print(table)
     pass
 
+
 if __name__ == '__main__':
     #createCompanies()
     #creates companies with, random hq place, random money
@@ -329,9 +352,10 @@ if __name__ == '__main__':
     #createEmployees(30)
     ### --> cap in copany einführen für unterschiedliche mitarbeiter zahlen
     
-    #checkTable("employee")
-    
-    createProject()
+    #checkTable("resource")
+
+    #resourceTable()
+    #createProject()
     
     #codeSql()
     #quick sql terminal for debuging
