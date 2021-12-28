@@ -71,7 +71,7 @@ def printTable(frame, table):
     :return: Nothing - returns the values inside the scrollbar table
     """
 
-    print(table)
+    #print(table)
     f = 0
     for i in table:
         f += 1
@@ -108,9 +108,23 @@ def chooseProject(projectId, root):
 
     projectObj.id = projectId
     root.destroy()
-    print(projectObj.id)
+    #print(projectObj.id)
     mainWindow()
 
+def printProjectReq(canvas):
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
+    command = f"SELECT * FROM required_resources WHERE project_id LIKE '{projectObj.id}'"
+    table = cur.execute(command).fetchall()
+    print(table)
+
+    f = 0
+    for i in table:
+        f += 1
+        text = f"{i[1]}: {i[2]}"
+        tk.Label(canvas, text=text).grid(row=f, column=4, pady=10, padx=10, sticky="w")
+
+    pass
         
 def openProjectsWindow(root):
     """
@@ -203,7 +217,7 @@ def mainWindow():
     #############################################################
 
 
-    #### scrollbar stuff#############################
+    #### scrollbar stuff - employee list#############################
     table = tk.Canvas(canvas, bg="black")
     table.place(relx=0.05, rely=0.3, relwidth=0.9, relheight=0.3, anchor='nw')
     # create a main frame
@@ -224,21 +238,39 @@ def mainWindow():
     canvas1.create_window((0, 0), window=frameScroll, anchor="nw")
     ##############################################################
 
+    #### scrollbar stuff - resource list#############################
+    tableReq = tk.Canvas(canvas, bg="black")
+    tableReq.place(relx=0.05, rely=0.65, relwidth=0.9, relheight=0.3, anchor='nw')
+    # create a main frame
+    mainFrameReq = tk.Frame(tableReq, bg="#ffffff")
+    mainFrameReq.pack(fill='both', expand=1)
+    # canvas
+    canvas1Req = tk.Canvas(mainFrameReq)
+    canvas1Req.pack(side='left', fill='both', expand=1)
+    # scrollbar
+    canvScrollReq = ttk.Scrollbar(mainFrameReq, orient='vertical', command=canvas1Req.yview)
+    canvScrollReq.pack(side='right', fill='y')
+    # cofig canvas
+    canvas1Req.configure(yscrollcommand=canvScrollReq.set)
+    canvas1Req.bind('<Configure>', lambda e: canvas1Req.configure(scrollregion=canvas1Req.bbox("all")))
+    # create another frame in canvas
+    frameScrollReq = tk.Frame(canvas1Req)
+    # add fram to window in canvas
+    canvas1Req.create_window((0, 0), window=frameScrollReq, anchor="nw")
+    ##############################################################
+
+
 
     #add mitarbeiter
     #angaben inputs
     
     #mitarbeiter projekte zuweisen
     
-    #project dropdown
-    
     #project start
     
-    
-    #allgemeine abragen - dev menu
-    
     printEmployees(selectedCompany.get(), frameScroll)
-    
+    printProjectReq(frameScrollReq)
+
     root.mainloop()
 
 def login(entry, root):
