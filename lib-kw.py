@@ -313,7 +313,26 @@ def resourceTable():
         conn.commit()
         print(command)
 
+def requiredRsourceTable():
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
 
+    command = f"SELECT name FROM resource"
+    resourceId = cur.execute(command).fetchall()
+
+    command = f"SELECT id, difficulty FROM project"
+    projectId = cur.execute(command).fetchall()
+
+    print(resourceId)
+    print(projectId)
+
+    for i in projectId:
+        for j in resourceId:
+            command = f"INSERT INTO required_resources VALUES('{i[0]}', '{j[0]}', {random.randint(0, i[1])})"
+            cur.execute(command)
+            print(command)
+            conn.commit()
+            
 def delTable(table):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -347,7 +366,7 @@ if __name__ == '__main__':
     #outputs table content in consol - parameter = table name
 
     #delete table content - dev tool
-    #delTable("project")
+    #delTable("resource")
 
     #createEmployees(30)
     ### --> cap in copany einführen für unterschiedliche mitarbeiter zahlen
@@ -360,6 +379,8 @@ if __name__ == '__main__':
     #codeSql()
     #quick sql terminal for debuging
 
+    #resourceTable()
+    requiredRsourceTable()
 
 #Sql, py project - conect python GUI with sql data base
 #
