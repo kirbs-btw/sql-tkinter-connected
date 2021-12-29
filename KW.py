@@ -56,7 +56,7 @@ def printEmployees(company, frame):
             pass
         else:
             companyName = companyName + i
-    command = f"SELECT DISTINCT employee.name, employee.lastname, employee.position,employee.experience FROM company, employee WHERE employee.company_id = (SELECT id FROM company WHERE name = '{companyName}')"
+    command = f"SELECT DISTINCT employee.name, employee.lastname, employee.position, employee.experience, employee.id FROM company, employee WHERE employee.company_id = (SELECT id FROM company WHERE name = '{companyName}') ORDER BY employee.experience DESC"
     employeeTable = cur.execute(command).fetchall()
     printTable(frame, employeeTable)
     
@@ -79,7 +79,11 @@ def printTable(frame, table):
         tk.Label(frame, text=i[1], justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[2], justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[3], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
-        
+        tk.Button(frame, text="pick", justify="left", command = lambda m = i[4]: printID(m)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
+
+def printID(f):
+    print(f)
+
 def printTableProjects(frame, root):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -116,9 +120,16 @@ def printProjectReq(canvas):
     cur = conn.cursor()
     command = f"SELECT * FROM required_resources WHERE project_id LIKE '{projectObj.id}'"
     table = cur.execute(command).fetchall()
-    print(table)
+    command = f"SELECT * FROM project WHERE id = '{projectObj.id}'"
+    projectInfoTable = cur.execute(command).fetchall()
+    #print(projectInfoTable)
+    #print(table)
+    f = 1
+    if projectInfoTable != []:
+        projectInfo = f"{projectInfoTable[0][0]} : {projectInfoTable[0][1]} : {projectInfoTable[0][2]} : {projectInfoTable[0][3]}"
+        tk.Label(canvas, text=projectInfo).grid(row=f, column=4, pady=10, padx=10, sticky="w")
 
-    f = 0
+
     for i in table:
         f += 1
         text = f"{i[1]}: {i[2]}"
@@ -166,7 +177,7 @@ def openProjectsWindow(root):
 def mainWindow():
     """
     main user interface
-    used to select companys and employees
+    used to select companies and employees
 
     also there is a secrete button behind the kw logo :) shhhht
     password = kw
@@ -369,9 +380,9 @@ def devWindow():
 
 if __name__ == '__main__':
     mainWindow()
-    #mainWindow()
     
     # password to dev Window is = kw
+
     #devWindow()
 
 #Sql, py project - connect python GUI with sql data base
