@@ -332,7 +332,7 @@ def requiredRsourceTable():
             cur.execute(command)
             print(command)
             conn.commit()
-            
+
 def delTable(table):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
