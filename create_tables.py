@@ -2,7 +2,21 @@ import sqlite3
 import os
 
 def main():
-    f = open("kw.sql", "w+")
+    """
+    Creates SQL Tables in 'kw.sql'
+
+    employee (id, name, lastname, position, experience, residence, salary, hiring_date, company_id, project_id
+    company (id, name, hq, money)
+    project (id, name, difficulty, return)
+    required_resources (project_id, resource_id, amount)
+    resources_owned_by_company (company_id, resource_id, amount)
+    resource (name , price) ==> look up table for prices - could be connected with a real world api...
+
+    :return: none - creates tables in
+    """
+
+
+    #f = open("kw.sql", "w+") #creates the sql file
     
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
