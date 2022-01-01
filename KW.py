@@ -8,7 +8,15 @@ class selectProject:
     def __init__(self, n):
         self.id = n
 
+class selectEmployee:
+
+    def __init__(self, n):
+        self.employee = n
+
 projectObj = selectProject(None)
+
+arr = []
+employeeObj = selectEmployee(arr)
 
 def getCompanyList():
     """
@@ -79,10 +87,36 @@ def printTable(frame, table):
         tk.Label(frame, text=i[1], justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[2], justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[3], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
-        tk.Button(frame, text="pick", justify="left", command = lambda m = i[4]: printID(m)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
+        tk.Button(frame, text="pick", justify="left", command = lambda m = i[4], l = f: collectId(m, frame, l)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
 
-def printID(f):
-    print(f)
+def collectId(f, frame, col):
+    """
+
+    :param f: id of the pickes employee == string with 6 charakters
+    :param frame: frame where the buttons are in
+    :param col: column of the button
+    :return: none prints results in employeeObj as a list ( employeeObj.employee.append(f) )
+    """
+
+    # deletes the button of the pick employee
+    #
+    # bug after the first button is deleted the next shifts wrongly
+    buttonNum = 0
+    done = True
+    widgets = frame.winfo_children()
+    for widget in widgets:
+        if type(widget) == type(tk.Button()):
+            buttonNum += 1
+        if buttonNum == col and done:
+            widget.destroy()
+            done = False
+
+
+
+    employeeObj.employee.append(f)
+
+
+    print(employeeObj.employee)
 
 def printTableProjects(frame, root):
     conn = sqlite3.connect("kw.sql")
