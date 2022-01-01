@@ -91,6 +91,7 @@ def printTable(frame, table):
 
 def collectId(f, frame, col):
     """
+    collets the id´s of the picked employees
 
     :param f: id of the pickes employee == string with 6 charakters
     :param frame: frame where the buttons are in
