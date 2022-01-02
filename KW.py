@@ -166,8 +166,6 @@ def chooseProject(projectId, root):
     #print(projectObj.id)
     mainWindow()
 
-
-
 def printDiffireq(canvas):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -182,6 +180,17 @@ def printDiffireq(canvas):
 
         skill = tk.Label(canvas, text = "skill\n0")
         skill.place(relx=0.3, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
+
+def doProject(canvas):
+    """
+    does the project
+    looks at the resource of the company and the skill of the employees
+    to get the result of the project
+
+
+    """
+
+    pass
 
 
 def openProjectsWindow(root):
@@ -296,6 +305,10 @@ def mainWindow():
     canvas1.create_window((0, 0), window=frameScroll, anchor="nw")
     ##############################################################
 
+
+    if projectObj.id != None:
+        doProjectButton = tk.Button(canvas, text="execute", command=lambda: doProject(canvas))
+        doProjectButton.place(relx=0.6, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
 
 
     #add mitarbeiter
