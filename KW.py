@@ -47,7 +47,7 @@ def destroyWidget(frame):
         widget.destroy()
     
 
-def printEmployees(company, frame):
+def printEmployees(company, frame, canvas):
     """
     :param company: company name to get the employees of the company
     :param frame: frame where to display the information
@@ -66,13 +66,13 @@ def printEmployees(company, frame):
             companyName = companyName + i
     command = f"SELECT DISTINCT employee.name, employee.lastname, employee.position, employee.experience, employee.id FROM company, employee WHERE employee.company_id = (SELECT id FROM company WHERE name = '{companyName}') ORDER BY employee.experience DESC"
     employeeTable = cur.execute(command).fetchall()
-    printTable(frame, employeeTable)
+    printTable(frame, employeeTable, canvas)
     
     conn.close()
         
     pass
 
-def printTable(frame, table):
+def printTable(frame, table, canvas):
     """
     :param frame: frame where it puts the information
     :param table: table with the information (table is 2d)
@@ -87,11 +87,11 @@ def printTable(frame, table):
         tk.Label(frame, text=i[1], justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[2], justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[3], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
-        tk.Button(frame, text="pick", justify="left", command = lambda m = i[4], l = f: collectId(m, frame, l)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
+        tk.Button(frame, text="pick", justify="left", command = lambda m = i[4], l = f: collectId(canvas ,m, frame, l)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
 
-def collectId(f, frame, col):
+def collectId(canvas ,f, frame, col):
     """
-    collets the id´s of the picked employees
+    collects the id´s of the picked employees
 
     :param f: id of the pickes employee == string with 6 charakters
     :param frame: frame where the buttons are in
@@ -102,22 +102,37 @@ def collectId(f, frame, col):
     # deletes the button of the pick employee
     #
     # bug after the first button is deleted the next shifts wrongly
-    buttonNum = 0
-    done = True
-    widgets = frame.winfo_children()
-    for widget in widgets:
-        if type(widget) == type(tk.Button()):
-            buttonNum += 1
-        if buttonNum == col and done:
-            widget.destroy()
-            done = False
+    #buttonNum = 0
+    #done = True
+    #widgets = frame.winfo_children()
+    #for widget in widgets:
+    #    if type(widget) == type(tk.Button()):
+    #        buttonNum += 1
+    #    if buttonNum == col and done:
+    #        widget.destroy()
+    #        done = False
 
 
 
     employeeObj.employee.append(f)
-
+    printSkill(canvas)
 
     print(employeeObj.employee)
+
+
+def printSkill(canvas):
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
+    skillCount = 0
+    for i in employeeObj.employee:
+        command = f"SELECT experience FROM employee WHERE id = '{i}'"
+        skill = cur.execute(command).fetchall()
+        skillCount = skillCount + skill[0][0]
+        print(skillCount)
+    text = f"Skill:\n{str(skillCount)}"
+    skill = tk.Label(canvas, text=text)
+    skill.place(relx=0.3, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
+    pass
 
 def printTableProjects(frame, root):
     conn = sqlite3.connect("kw.sql")
@@ -146,32 +161,29 @@ def chooseProject(projectId, root):
     """
 
     projectObj.id = projectId
+    employeeObj.employee = []
     root.destroy()
     #print(projectObj.id)
     mainWindow()
 
-def printProjectReq(canvas):
+
+
+def printDiffireq(canvas):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
-    command = f"SELECT * FROM required_resources WHERE project_id LIKE '{projectObj.id}'"
+    command = f"SELECT difficulty FROM project WHERE id = '{projectObj.id}'"
     table = cur.execute(command).fetchall()
-    command = f"SELECT * FROM project WHERE id = '{projectObj.id}'"
-    projectInfoTable = cur.execute(command).fetchall()
-    #print(projectInfoTable)
-    #print(table)
-    f = 1
-    if projectInfoTable != []:
-        projectInfo = f"{projectInfoTable[0][0]} : {projectInfoTable[0][1]} : {projectInfoTable[0][2]} : {projectInfoTable[0][3]}"
-        tk.Label(canvas, text=projectInfo).grid(row=f, column=4, pady=10, padx=10, sticky="w")
+    conn.close()
+
+    if table != []:
+        text = f"Required Skill: \n{table[0][0]}"
+        diffLabel = tk.Label(canvas, text=text)
+        diffLabel.place(relx=0.05, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
+
+        skill = tk.Label(canvas, text = "skill\n0")
+        skill.place(relx=0.3, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
 
 
-    for i in table:
-        f += 1
-        text = f"{i[1]}: {i[2]}"
-        tk.Label(canvas, text=text).grid(row=f, column=4, pady=10, padx=10, sticky="w")
-
-    pass
-        
 def openProjectsWindow(root):
     """
     the projects window has the purpose to let the user select a project from the list
@@ -284,27 +296,6 @@ def mainWindow():
     canvas1.create_window((0, 0), window=frameScroll, anchor="nw")
     ##############################################################
 
-    #### scrollbar stuff - resource list#############################
-    tableReq = tk.Canvas(canvas, bg="black")
-    tableReq.place(relx=0.05, rely=0.65, relwidth=0.9, relheight=0.3, anchor='nw')
-    # create a main frame
-    mainFrameReq = tk.Frame(tableReq, bg="#ffffff")
-    mainFrameReq.pack(fill='both', expand=1)
-    # canvas
-    canvas1Req = tk.Canvas(mainFrameReq)
-    canvas1Req.pack(side='left', fill='both', expand=1)
-    # scrollbar
-    canvScrollReq = ttk.Scrollbar(mainFrameReq, orient='vertical', command=canvas1Req.yview)
-    canvScrollReq.pack(side='right', fill='y')
-    # cofig canvas
-    canvas1Req.configure(yscrollcommand=canvScrollReq.set)
-    canvas1Req.bind('<Configure>', lambda e: canvas1Req.configure(scrollregion=canvas1Req.bbox("all")))
-    # create another frame in canvas
-    frameScrollReq = tk.Frame(canvas1Req)
-    # add fram to window in canvas
-    canvas1Req.create_window((0, 0), window=frameScrollReq, anchor="nw")
-    ##############################################################
-
 
 
     #add mitarbeiter
@@ -313,9 +304,10 @@ def mainWindow():
     #mitarbeiter projekte zuweisen
     
     #project start
-    
-    printEmployees(selectedCompany.get(), frameScroll)
-    printProjectReq(frameScrollReq)
+
+    printDiffireq(canvas)
+
+    printEmployees(selectedCompany.get(), frameScroll, canvas)
 
     root.mainloop()
 
