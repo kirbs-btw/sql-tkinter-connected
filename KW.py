@@ -254,22 +254,17 @@ def doProject(canvas, company):
     cur.execute(command)
     conn.commit()
 
-    # deleting the project ...
+    # deleting the project
 
+    command = f"DELETE FROM project WHERE id = '{projectObj.id}'"
+    cur.execute(command)
+    conn.commit()
 
-    # command = f"SELECT * FROM resources_owned_by_company WHERE company_id = '{companyId}' ORDER BY resource_id"
-    # companyResource = cur.execute(command).fetchall()
+    # reset projectObj
 
-    # print(companyResource)
+    projectObj.id = None
 
-
-
-
-
-
-
-
-
+    return True
 
 def openProjectsWindow(root):
     """
