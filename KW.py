@@ -181,16 +181,94 @@ def printDiffireq(canvas):
         skill = tk.Label(canvas, text = "skill\n0")
         skill.place(relx=0.3, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
 
-def doProject(canvas):
+def doProject(canvas, company):
     """
     does the project
     looks at the resource of the company and the skill of the employees
     to get the result of the project
 
-
     """
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
 
-    pass
+    command = f"SELECT difficulty FROM project WHERE id = '{projectObj.id}'"
+    projDifficulty = cur.execute(command).fetchall()[0][0]
+
+    skillCount = 0
+    for i in employeeObj.employee:
+        command = f"SELECT experience FROM employee WHERE id = '{i}'"
+        skill = cur.execute(command).fetchall()
+        skillCount = skillCount + skill[0][0]
+
+    skillEmployee = skillCount
+
+    # brakes function if skill is not => difficulty
+    if skillEmployee < projDifficulty:
+        return False
+
+    # delete resource from company
+    companyName = str()
+
+    # cuts try to cut up - input is weird
+    for i in company:
+        if i == "(" or i == ")" or i == "," or i == "'":
+            pass
+        else:
+            companyName = companyName + i
+
+    command = f"SELECT id FROM company WHERE name LIKE '{companyName}'"
+    companyId = cur.execute(command).fetchall()[0][0]
+
+    print(companyId)
+
+    command = f"SELECT * FROM resources_owned_by_company WHERE company_id = '{companyId}' ORDER BY resource_id"
+    companyResource = cur.execute(command).fetchall()
+
+    command = f"SELECT * FROM required_resources WHERE project_id = '{projectObj.id}' ORDER BY resource_id"
+    resourcesRequired = cur.execute(command).fetchall()
+
+
+    j = 0
+    # print(companyResource)
+
+    # deleting the resources required from the resources_owned_by_company table
+    for i in resourcesRequired:
+        print(i)
+        newResource = companyResource[j][2] - i[2]
+        command = f"UPDATE resources_owned_by_company SET amount = {newResource} WHERE company_id LIKE '{companyResource[j][0]}' AND resource_id LIKE '{i[1]}'"
+        cur.execute(command)
+        conn.commit()
+        j += 1
+
+    # adding the money from the project to the company Table
+    command = f"SELECT * FROM project WHERE id LIKE '{projectObj.id}'"
+    returnMoney = cur.execute(command).fetchall()
+
+    command = f"SELECT * FROM company WHERE name LIKE '{companyName}'"
+    companyMoney = cur.execute(command).fetchall()
+    print(companyMoney)
+
+    addedMoney = returnMoney[0][3] + companyMoney[0][3]
+
+    command = f"UPDATE company SET money = {addedMoney} WHERE name = '{companyName}'"
+    cur.execute(command)
+    conn.commit()
+
+    # deleting the project ...
+
+
+    # command = f"SELECT * FROM resources_owned_by_company WHERE company_id = '{companyId}' ORDER BY resource_id"
+    # companyResource = cur.execute(command).fetchall()
+
+    # print(companyResource)
+
+
+
+
+
+
+
+
 
 
 def openProjectsWindow(root):
@@ -307,7 +385,7 @@ def mainWindow():
 
 
     if projectObj.id != None:
-        doProjectButton = tk.Button(canvas, text="execute", command=lambda: doProject(canvas))
+        doProjectButton = tk.Button(canvas, text="execute", command=lambda: doProject(canvas, selectedCompany.get()))
         doProjectButton.place(relx=0.6, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
 
 
