@@ -313,7 +313,7 @@ def resourceTable():
         conn.commit()
         print(command)
 
-def requiredRsourceTable():
+def requiredResourceTable():
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
 
@@ -332,6 +332,37 @@ def requiredRsourceTable():
             cur.execute(command)
             print(command)
             conn.commit()
+
+def resourceOwnedByCompany():
+    """
+    creates the resources_owned_by_company table
+    collating with the resource table
+    and the company table
+
+    :return: none - sql table insert
+    """
+
+
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
+
+    command = f"SELECT * FROM resource"
+    resourceNames = cur.execute(command).fetchall()
+
+    command = f"SELECT * FROM company"
+    companyTable = cur.execute(command).fetchall()
+
+    for i in companyTable:
+        for j in resourceNames:
+            name = i[0]
+            resource = j[0]
+            amount = random.randint(10000, 200000)
+            command = f"INSERT INTO resources_owned_by_company VALUES('{name}', '{resource}', {amount})"
+            cur.execute(command)
+            conn.commit()
+            print(command)
+
+
 
 def delTable(table):
     conn = sqlite3.connect("kw.sql")
@@ -366,12 +397,12 @@ if __name__ == '__main__':
     #outputs table content in consol - parameter = table name
 
     #delete table content - dev tool
-    #delTable("resource")
+    #delTable("required_resources")
 
     #createEmployees(30)
     ### --> cap in copany einführen für unterschiedliche mitarbeiter zahlen
     
-    #checkTable("resource")
+    #checkTable("company")
 
     #resourceTable()
     #createProject()
@@ -379,9 +410,17 @@ if __name__ == '__main__':
     #codeSql()
     #quick sql terminal for debuging
 
-    #resourceTable()
-    requiredRsourceTable()
+    # reset projects tables ###########
+    delTable("project")
+    delTable("required_resources")
+    createProject()
+    requiredResourceTable()
 
+
+    #resourceTable()
+    #requiredResourceTable()
+
+    #resourceOwnedByCompany()
 #Sql, py project - conect python GUI with sql data base
 #
 #Bastian Lipka -
