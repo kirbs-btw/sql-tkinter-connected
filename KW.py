@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import sqlite3
 import os
+import editTables
 
 class selectProject:
 
@@ -477,12 +478,36 @@ def devWindow():
 
     canvas.create_text(375, 75, text="Eingaben", font=(None, 25), anchor="n")
     
-    executeButton = tk.Button(canvas, borderwidth=0, text = "okookokokokokokok", bg='#ffffff', command = lambda: executeSqlCommand(commandInput.get()))
-    executeButton.place(relx = 0.05, rely=0.2, relwidth=0.5, relheight=0.03)
+    # executeButton = tk.Button(canvas, borderwidth=0, text = "okookokokokokokok", bg='#ffffff', command = lambda: executeSqlCommand(commandInput.get()))
+    # executeButton.place(relx = 0.05, rely=0.2, relwidth=0.5, relheight=0.03)
     
-    commandInput = tk.Entry(canvas)
-    commandInput.place(relx = 0.05, rely=0.25, relwidth=0.5, relheight=0.03)
-    
+    # commandInput = tk.Entry(canvas)
+    # commandInput.place(relx = 0.05, rely=0.25, relwidth=0.5, relheight=0.03)
+
+    # add new project
+
+    canvas.create_text(100, 150, text="Project hinzufügen", anchor="n")
+
+    canvas.create_text(55, 215, text="Name", anchor="w")
+    nameInput = tk.Entry(canvas)
+    nameInput.place(relx=0.069, rely=0.3, relwidth=0.15, relheight=0.03)
+
+    canvas.create_text(55, 275, text="schwierigkeit", anchor="w")
+    difficultyInput = tk.Entry(canvas)
+    difficultyInput.place(relx=0.069, rely=0.385, relwidth=0.15, relheight=0.03)
+
+    canvas.create_text(55, 335, text="einnahme", anchor="w")
+    returnInput = tk.Entry(canvas)
+    returnInput.place(relx=0.069, rely=0.47, relwidth=0.15, relheight=0.03)
+
+    addProjButton = tk.Button(canvas, text="Add projekt",command=lambda: editTables.createProject(nameInput.get(), returnInput.get(), difficultyInput.get()))
+    addProjButton.place(relx=0.069, rely=0.555, relwidth=0.15, relheight=0.03)
+
+    canvas.create_text(350, 150, text="Mitarbeiter hinzufügen", anchor="n")
+    canvas.create_text(600, 150, text="Firma Hinzufügen", anchor="n")
+
+
+
     
     root.mainloop()
 
@@ -492,11 +517,11 @@ def devWindow():
 
 
 if __name__ == '__main__':
-    mainWindow()
+    #mainWindow()
     
     # password to dev Window is = kw
 
-    #devWindow()
+    devWindow()
 
 #Sql, py project - connect python GUI with sql data base
 #
