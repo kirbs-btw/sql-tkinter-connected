@@ -2,6 +2,7 @@ import random
 import sqlite3
 import math
 
+
 def createCompanies():
     """
     creates random company stats
@@ -38,13 +39,13 @@ def createCompanies():
     # data sets will be changed to sql
 
 #id name hq geld
-    
+
     conn = sqlite3.connect("kw.sql")
 
     cur = conn.cursor()
 
     numId = 1000
-    
+
     for company in nameArray:
         numId += 1
         id = f"{company[0]}{company[1]}{numId}"
@@ -82,12 +83,12 @@ def generatePosition(xp):
         position = rank[3]
     elif xp <= 25 and xp > 20:
         position = rank[4]
-    
+
     return position
 def salaryRand(position):
     """get salary based on position in company needs position asa argument"""
     salary = 0
-    
+
     if position == 'Intern':
         salary = random.randint(0, 1200)
     elif position == 'Designer':
@@ -98,9 +99,9 @@ def salaryRand(position):
         salary = random.randint(2900, 5200)
     elif position == 'Sales Manger':
         salary = random.randint(1000, 6500)
-    
-    
-    return salary 
+
+
+    return salary
 
 
 def createEmployees(count):
@@ -193,7 +194,7 @@ def createEmployees(count):
         "Sao Paulo",
     ]
     # data sets will be changed to sql
-    
+
 
     companyCommand = f"SELECT * FROM company"
     companyTable = cur.execute(companyCommand).fetchall()
@@ -213,12 +214,12 @@ def createEmployees(count):
         hiring_date = hiringDateGenerator()
         salary = salaryRand(position)
         project_id = "NULL"
-        
+
         command = f"INSERT INTO employee VALUES('{id}', '{randName}', '{randSirName}', '{position}', '{experience}', '{residence}', '{salary}', '{hiring_date}', '{company_id}', '{project_id}')"
         cur.execute(command)
         print(command)
         conn.commit()
-        
+
     conn.close()
 def hiringDateGenerator():
     """
@@ -254,17 +255,17 @@ def createProject():
         'placeHolder10',
         'placeHolder11',
         'placeHolder12',
-        
+
         ]
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
-    
+
     f = 1000
     for i in projectName:
         f += 1
         proid = f"{i[0:1]}{f}"
         difficulty = random.randint(50, 200)
-        
+
         returnSalary = 1000 * (1 + (math.sin((0.0025*difficulty) * math.pi))) * 7
         #sin adds a multipier to the base value so salary is based on the difficulty
 
@@ -273,8 +274,8 @@ def createProject():
         cur.execute(command)
         conn.commit()
         print(command)
-         
-    
+
+
     pass
 
 def checkTable(table):
@@ -389,6 +390,20 @@ def executeSqlCommand(command):
     print(table)
     pass
 
+def restartEverything():
+    delTable("employee")
+    delTable("company")
+    delTable("project")
+    delTable("required_resources")
+    delTable("resources_owned_by_company")
+    delTable("resource")
+
+    createCompanies()
+    createEmployees(30)
+    resourceTable()
+    createProject()
+    requiredResourceTable()
+    resourceOwnedByCompany()
 
 if __name__ == '__main__':
     #createCompanies()
@@ -401,26 +416,30 @@ if __name__ == '__main__':
 
     #createEmployees(30)
     ### --> cap in copany einführen für unterschiedliche mitarbeiter zahlen
-    
+
     #checkTable("company")
 
     #resourceTable()
     #createProject()
-    
+
     #codeSql()
     #quick sql terminal for debuging
 
     # reset projects tables ###########
-    delTable("project")
-    delTable("required_resources")
-    createProject()
-    requiredResourceTable()
+    #delTable("project")
+    #delTable("required_resources")
+    #createProject()
+    #requiredResourceTable()
 
 
     #resourceTable()
     #requiredResourceTable()
 
     #resourceOwnedByCompany()
+
+    restartEverything()
+
+
 #Sql, py project - conect python GUI with sql data base
 #
 #Bastian Lipka -
