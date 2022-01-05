@@ -34,7 +34,7 @@ def getCompanyList():
     command = f"SELECT name FROM company"
     companyList = cur.execute(command).fetchall()
     conn.close()
-    
+
     return companyList
 
 def destroyWidget(frame):
@@ -42,11 +42,10 @@ def destroyWidget(frame):
     :param frame: frame = the frame where the children will be killed
     :return: none - kills the children of frame
     """
-
     widgets = frame.winfo_children()
     for widget in widgets:
         widget.destroy()
-    
+
 
 def printEmployees(company, frame, canvas):
     """
@@ -58,7 +57,7 @@ def printEmployees(company, frame, canvas):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
     companyName = str()
-    
+
     #cuts try to cut up - input is weird
     for i in company:
         if i == "(" or i == ")" or i == "," or i == "'":
@@ -68,9 +67,9 @@ def printEmployees(company, frame, canvas):
     command = f"SELECT DISTINCT employee.name, employee.lastname, employee.position, employee.experience, employee.id FROM company, employee WHERE employee.company_id = (SELECT id FROM company WHERE name = '{companyName}') ORDER BY employee.experience DESC"
     employeeTable = cur.execute(command).fetchall()
     printTable(frame, employeeTable, canvas)
-    
+
     conn.close()
-        
+
     pass
 
 def printTable(frame, table, canvas):
@@ -146,13 +145,12 @@ def printTableProjects(frame, root):
         f += 1
         tk.Label(frame, text=i[1], justify="left").grid(row=f, column=1, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[2], justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
-        tk.Label(frame, text=i[3], justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
+        tk.Label(frame, text=round(i[3], 2), justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[0], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
         tk.Button(frame, text = "Choose Project", justify="left", command = lambda m = i[0]: chooseProject(m, root)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
 
 def chooseProject(projectId, root):
     """
-
     selected project id gets saved in projectObj for later use
 
     :param projectId: id of the selected Project
@@ -277,10 +275,10 @@ def openProjectsWindow(root):
 
     root.destroy()
     root = tk.Tk()
-    
+
     canvas = tk.Canvas(root, width=750, height=450, bg='#ffffff')
     canvas.pack()
-    
+
     table = tk.Canvas(canvas, bg="black")
     table.place(relwidth=1, relheight=1, anchor='nw')
     # create a main frame
@@ -299,9 +297,9 @@ def openProjectsWindow(root):
     frameScroll = tk.Frame(canvas1)
     # add fram to window in canvas
     canvas1.create_window((0, 0), window=frameScroll, anchor="nw")
-    
+
     printTableProjects(frameScroll, root)
-    
+
     root.mainloop()
 
 def mainWindow():
@@ -333,7 +331,7 @@ def mainWindow():
     canvas.create_text(130, 185, text="Angestellten Tabelle", font=(None, 15), anchor="n")
 
 
-    refreshButton = tk.Button(canvas, image=refreshImg, borderwidth=0, bg='#ffffff', command = lambda: printEmployees(selectedCompany.get(), frameScroll))
+    refreshButton = tk.Button(canvas, image=refreshImg, borderwidth=0, bg='#ffffff', command = lambda: printEmployees(selectedCompany.get(), frameScroll, canvas))
     refreshButton.place(relx=0.5, rely=0.15, relwidth=0.048, relheight=0.048, anchor="nw")
 
     # drop down employee#####################
@@ -346,7 +344,7 @@ def mainWindow():
     #bsp list eig list wird abfrage einer sql tabelle
     #companyList = lib-kw.getCompanies()
     companyList = getCompanyList()
-    
+
     #Variable, die immer der gleichen Wert haben soll, wie das, was im Menü ausgewählt ist
     selectedCompany = tk.StringVar(canvas)
     selectedCompany.set(companyList[0])
@@ -387,9 +385,9 @@ def mainWindow():
 
     #add mitarbeiter
     #angaben inputs
-    
+
     #mitarbeiter projekte zuweisen
-    
+
     #project start
 
     printDiffireq(canvas)
@@ -408,15 +406,15 @@ def login(entry, root):
     """
 
     password = "kw"
-    
+
     if entry == password:
         root.destroy()
         devWindow()
-        
+
     else:
         print("wrong password")
-        
-        
+
+
 #######################################
 # Password check for development window
 #######################################
@@ -432,19 +430,19 @@ def passwordDev():
     root = tk.Tk()
     root.title("Password")
     root.iconbitmap("gui/kw.ico")
-    
+
     canvas = tk.Canvas(root, width=300, height=150)
     canvas.pack()
-    
+
     canvas.create_text(57.5, 50, text="password", font=(None, 10), anchor="n")
-    
+
     passwordInput = tk.Entry(canvas)
     passwordInput.place(relx = 0.1, rely = 0.45)
-    
+
     loginButton = tk.Button(canvas, text = "login",command = lambda: login(passwordInput.get(), root))
     loginButton.place(relx = 0.6, rely = 0.45)
-    
-    
+
+
     root.mainloop()
 
 def executeSqlCommand(command):
@@ -477,38 +475,87 @@ def devWindow():
     canvas.pack()
 
     canvas.create_text(375, 75, text="Eingaben", font=(None, 25), anchor="n")
-    
+
     # executeButton = tk.Button(canvas, borderwidth=0, text = "okookokokokokokok", bg='#ffffff', command = lambda: executeSqlCommand(commandInput.get()))
     # executeButton.place(relx = 0.05, rely=0.2, relwidth=0.5, relheight=0.03)
-    
+
     # commandInput = tk.Entry(canvas)
     # commandInput.place(relx = 0.05, rely=0.25, relwidth=0.5, relheight=0.03)
 
     # add new project
+    inputHeight = 0.03
+    inputWidth = 0.15
 
+    # add project ###############################################################
     canvas.create_text(100, 150, text="Project hinzufügen", anchor="n")
 
     canvas.create_text(55, 215, text="Name", anchor="w")
     nameInput = tk.Entry(canvas)
-    nameInput.place(relx=0.069, rely=0.3, relwidth=0.15, relheight=0.03)
+    nameInput.place(relx=0.069, rely=0.3, relwidth=inputWidth, relheight=inputHeight)
 
     canvas.create_text(55, 275, text="schwierigkeit", anchor="w")
     difficultyInput = tk.Entry(canvas)
-    difficultyInput.place(relx=0.069, rely=0.385, relwidth=0.15, relheight=0.03)
+    difficultyInput.place(relx=0.069, rely=0.385, relwidth=inputWidth, relheight=inputHeight)
 
     canvas.create_text(55, 335, text="einnahme", anchor="w")
     returnInput = tk.Entry(canvas)
-    returnInput.place(relx=0.069, rely=0.47, relwidth=0.15, relheight=0.03)
+    returnInput.place(relx=0.069, rely=0.47, relwidth=inputWidth, relheight=inputHeight)
 
-    addProjButton = tk.Button(canvas, text="Add projekt",command=lambda: editTables.createProject(nameInput.get(), returnInput.get(), difficultyInput.get()))
-    addProjButton.place(relx=0.069, rely=0.555, relwidth=0.15, relheight=0.03)
-
+    addProjButton = tk.Button(canvas, text="Hinzufügen",command=lambda: editTables.createProject(nameInput.get(), returnInput.get(), difficultyInput.get()))
+    addProjButton.place(relx=0.069, rely=0.555, relwidth=inputWidth, relheight=inputHeight)
+    
+    #############################################################################
+    
+    #add Employee ###############################################################
+    # name lastname salary (hireringdate) company
+    
     canvas.create_text(350, 150, text="Mitarbeiter hinzufügen", anchor="n")
+
+    empNameInput = tk.Entry(canvas)
+    empNameInput.place(relx=0.38, rely=0.3, relwidth=inputWidth, relheight=inputHeight)
+
+    empLastNameInput = tk.Entry(canvas)
+    empLastNameInput.place(relx=0.38, rely=0.385, relwidth=inputWidth, relheight=inputHeight)
+
+    experienceInput = tk.Entry(canvas)
+    experienceInput.place(relx=0.38, rely=0.47, relwidth=inputWidth, relheight=inputHeight)
+    
+    salaryInput = tk.Entry(canvas)
+    salaryInput.place(relx=0.38, rely=0.555, relwidth=inputWidth, relheight=inputHeight)
+    
+    #dropdown companylist
+    companyList = getCompanyList() 
+
+    #Variable, die immer der gleichen Wert haben soll, wie das, was im Menü ausgewählt ist
+    selectedCompany = tk.StringVar(canvas)
+    selectedCompany.set(companyList[0])
+
+    #Hier kommt das eigentliche Menü, wird mit dem fenster und der Variable ausgewaehlt verknüpft
+    companyDropdown = tk.OptionMenu(root, selectedCompany, *companyList)
+    companyDropdown.place(relx = 0.38, rely=0.640, relwidth=inputWidth, relheight=inputHeight)
+    
+    addEmployeeButton = tk.Button(canvas, text="Hinzufügen", command=lambda: editTables.addEmployee(empNameInput.get(), empLastNameInput.get(), salaryInput.get(),experienceInput.get(), selectedCompany.get()))
+    addEmployeeButton.place(relx = 0.38, rely=0.725, relwidth=inputWidth, relheight=inputHeight)
+    
+    ###################################################################################
+    
     canvas.create_text(600, 150, text="Firma Hinzufügen", anchor="n")
 
+    canvas.create_text(550, 215, text="Name", anchor="w")
+    compNameInput = tk.Entry(canvas)
+    compNameInput.place(relx=0.73, rely=0.3, relwidth=inputWidth, relheight=inputHeight)
 
+    canvas.create_text(550, 275, text="Geld", anchor="w")
+    compMoneyInput = tk.Entry(canvas)
+    compMoneyInput.place(relx=0.73, rely=0.385, relwidth=inputWidth, relheight=inputHeight)
 
-    
+    canvas.create_text(550, 335, text="Hauptsitz", anchor="w")
+    compHqInput = tk.Entry(canvas)
+    compHqInput.place(relx=0.73, rely=0.47, relwidth=inputWidth, relheight=inputHeight)
+
+    addCompanyButton = tk.Button(canvas, text="Hinzufügen",command=lambda: editTables.createCompany(compNameInput.get(), compMoneyInput.get(), compHqInput.get()))
+    addCompanyButton.place(relx=0.73, rely=0.555, relwidth=inputWidth, relheight=inputHeight)
+
     root.mainloop()
 
 
@@ -517,17 +564,12 @@ def devWindow():
 
 
 if __name__ == '__main__':
-    #mainWindow()
-    
+    mainWindow()
+
     # password to dev Window is = kw
 
-    devWindow()
+    #devWindow()
 
 #Sql, py project - connect python GUI with sql data base
 #
 #Bastian Lipka -
-
-    
-    
-    
-    
