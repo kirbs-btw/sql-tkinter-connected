@@ -3,6 +3,7 @@ from tkinter import ttk
 import sqlite3
 import os
 import editTables
+import random
 
 class selectProject:
 
@@ -112,7 +113,7 @@ def collectId(canvas ,f, frame, col):
     #        widget.destroy()
     #        done = False
 
-
+    # trying to disable a button if used
 
     employeeObj.employee.append(f)
     printSkill(canvas)
@@ -203,6 +204,9 @@ def doProject(canvas, company):
 
     # brakes function if skill is not => difficulty
     if skillEmployee < projDifficulty:
+        failLable = tk.Label(canvas, text="Project fail!", bg="#FF6347")
+        failLable.place(rely=0.9, relx=0, relwidth=1, relheight=0.1)
+
         return False
 
     # delete resource from company
@@ -262,6 +266,11 @@ def doProject(canvas, company):
     # reset projectObj
 
     projectObj.id = None
+
+    # prints success if projects works
+    color = f"#{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}"
+    successLable = tk.Label(canvas, text="Project Done!", bg=color)
+    successLable.place(rely=0.9, relx=0, relwidth=1, relheight=0.1)
 
     return True
 
