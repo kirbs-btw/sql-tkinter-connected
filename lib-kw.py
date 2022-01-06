@@ -243,19 +243,43 @@ def createProject():
     """
 
     projectName = [
-        'placeHolder1',
-        'placeHolder2',
-        'placeHolder3',
-        'placeHolder4',
-        'placeHolder5',
-        'placeHolder6',
-        'placeHolder7',
-        'placeHolder8',
-        'placeHolder9',
-        'placeHolder10',
-        'placeHolder11',
-        'placeHolder12',
-
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
+        'placeholder',
         ]
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -391,6 +415,7 @@ def executeSqlCommand(command):
     pass
 
 def restartEverything():
+    print("\033[92m")
     delTable("employee")
     delTable("company")
     delTable("project")
