@@ -475,7 +475,7 @@ def devWindow():
 
     :return: none - returns a window for the user
     """
-
+    
     root = tk.Tk()
     root.title("[KW]")
     root.iconbitmap("gui/kw.ico")
@@ -485,11 +485,14 @@ def devWindow():
 
     canvas.create_text(375, 75, text="Eingaben", font=(None, 25), anchor="n")
 
-    # executeButton = tk.Button(canvas, borderwidth=0, text = "okookokokokokokok", bg='#ffffff', command = lambda: executeSqlCommand(commandInput.get()))
-    # executeButton.place(relx = 0.05, rely=0.2, relwidth=0.5, relheight=0.03)
+    #write SQL lines
+    commandInput = tk.Entry(canvas)
+    commandInput.place(relx = 0.05, rely=0.825, relwidth=0.5, relheight=0.03)
+    
+    executeButton = tk.Button(canvas, borderwidth=0, text = "execute", bg='#ffffff', command = lambda: executeSqlCommand(commandInput.get()))
+    executeButton.place(relx = 0.05, rely=0.875, relwidth=0.2, relheight=0.03)
 
-    # commandInput = tk.Entry(canvas)
-    # commandInput.place(relx = 0.05, rely=0.25, relwidth=0.5, relheight=0.03)
+    
 
     # add new project
     inputHeight = 0.03
@@ -522,16 +525,20 @@ def devWindow():
 
     empNameInput = tk.Entry(canvas)
     empNameInput.place(relx=0.38, rely=0.3, relwidth=inputWidth, relheight=inputHeight)
-
+    
+    canvas.create_text(290, 215, text="Vorname", anchor="w")
     empLastNameInput = tk.Entry(canvas)
     empLastNameInput.place(relx=0.38, rely=0.385, relwidth=inputWidth, relheight=inputHeight)
-
+    
+    canvas.create_text(290, 280, text="Nachname", anchor="w")
     experienceInput = tk.Entry(canvas)
     experienceInput.place(relx=0.38, rely=0.47, relwidth=inputWidth, relheight=inputHeight)
     
+    canvas.create_text(290, 345, text="Erfahrung", anchor="w")
     salaryInput = tk.Entry(canvas)
     salaryInput.place(relx=0.38, rely=0.555, relwidth=inputWidth, relheight=inputHeight)
     
+    canvas.create_text(290, 410, text="Einkommen", anchor="w")
     #dropdown companylist
     companyList = getCompanyList() 
 
@@ -566,10 +573,6 @@ def devWindow():
     addCompanyButton.place(relx=0.73, rely=0.555, relwidth=inputWidth, relheight=inputHeight)
 
     root.mainloop()
-
-
-
-
 
 
 if __name__ == '__main__':
