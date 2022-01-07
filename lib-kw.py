@@ -243,43 +243,29 @@ def createProject():
     """
 
     projectName = [
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
-        'placeholder',
+        'australien kaufen',
+        'expandieren',
+        'büros ausbauen',
+        'werbung'
+        'dropshipping accounts auf instagram bannen lassen',
+        'den mond kolonisieren',
+        'die erde sprengen',
+        'dyson sphere',
+        'atomare sprengkörper auf die pole des mars feuern',
+        'kw',
+        'viele autos',
+        'dubai haus mit dach terasse plus pool',
+        'mitarbeiter entlassen',
+        'info 19pkt',
+        'die toilette putzen',
+        'essen kochen',
+        'hotel bauen',
+        'geschenke verteilen',
+        'heizungen verkaufen',
+        'DWUH programmieren',
+        'Todersstern',
+        'Alderan vernichten',
+        'Traktorstrahl abstellen'
         ]
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -287,7 +273,7 @@ def createProject():
     f = 1000
     for i in projectName:
         f += 1
-        proid = f"{i[0:1]}{f}"
+        proid = f"{i[0:2]}{f}"
         difficulty = random.randint(50, 200)
 
         returnSalary = 1000 * (1 + (math.sin((0.0025*difficulty) * math.pi))) * 7
