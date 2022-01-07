@@ -134,9 +134,9 @@ def createProject(name, returnMoney, difficulty):
     prevId = cur.execute(command).fetchall()[-1][0]
     print(prevId)
 
-    f = int(prevId[1:]) + 1
+    f = int(prevId[2:]) + 1
 
-    proid = f"{name[0:1]}{f}"
+    proid = f"{name[0:2]}{f}"
 
     command = f"INSERT INTO project VALUES('{proid}', '{name}', {difficulty}, {returnMoney})"
     cur.execute(command)
