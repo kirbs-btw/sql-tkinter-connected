@@ -513,7 +513,7 @@ def devWindow():
     returnInput = tk.Entry(canvas)
     returnInput.place(relx=0.069, rely=0.47, relwidth=inputWidth, relheight=inputHeight)
 
-    addProjButton = tk.Button(canvas, text="Hinzufügen",command=lambda: editTables.createProject(nameInput.get(), returnInput.get(), difficultyInput.get()))
+    addProjButton = tk.Button(canvas, text="Hinzufügen",command=lambda: editTables.createProject(nameInput.get(), returnInput.get(), difficultyInput.get(), canvas))
     addProjButton.place(relx=0.069, rely=0.555, relwidth=inputWidth, relheight=inputHeight)
     
     #############################################################################
@@ -550,7 +550,7 @@ def devWindow():
     companyDropdown = tk.OptionMenu(root, selectedCompany, *companyList)
     companyDropdown.place(relx = 0.38, rely=0.640, relwidth=inputWidth, relheight=inputHeight)
     
-    addEmployeeButton = tk.Button(canvas, text="Hinzufügen", command=lambda: editTables.addEmployee(empNameInput.get(), empLastNameInput.get(), salaryInput.get(),experienceInput.get(), selectedCompany.get()))
+    addEmployeeButton = tk.Button(canvas, text="Hinzufügen", command=lambda: editTables.addEmployee(empNameInput.get(), empLastNameInput.get(), salaryInput.get(),experienceInput.get(), selectedCompany.get(), canvas))
     addEmployeeButton.place(relx = 0.38, rely=0.725, relwidth=inputWidth, relheight=inputHeight)
     
     ###################################################################################
@@ -569,7 +569,7 @@ def devWindow():
     compHqInput = tk.Entry(canvas)
     compHqInput.place(relx=0.73, rely=0.47, relwidth=inputWidth, relheight=inputHeight)
 
-    addCompanyButton = tk.Button(canvas, text="Hinzufügen",command=lambda: editTables.createCompany(compNameInput.get(), compMoneyInput.get(), compHqInput.get()))
+    addCompanyButton = tk.Button(canvas, text="Hinzufügen",command=lambda: editTables.createCompany(compNameInput.get(), compMoneyInput.get(), compHqInput.get(), canvas))
     addCompanyButton.place(relx=0.73, rely=0.555, relwidth=inputWidth, relheight=inputHeight)
 
     root.mainloop()
