@@ -2,6 +2,7 @@ import random
 import sqlite3
 import time 
 from datetime import datetime
+import tkinter as tk
 
 def generatePosition(xp):
     rank = [
@@ -27,7 +28,7 @@ def generatePosition(xp):
 
     return position
 
-def addEmployee(firstName, lastName, salary, exp, company):
+def addEmployee(firstName, lastName, salary, exp, company, canvas):
     orteArray = [
         "Moskau",
         "London",
@@ -83,12 +84,15 @@ def addEmployee(firstName, lastName, salary, exp, company):
     conn.commit()
     
     print(command)
-    
+
+    color = f"#{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}"
+    checkLabel = tk.Label(canvas, bg=color, text="Angestellter Hinzugefügt!")
+    checkLabel.place(relx=0, rely=0.95, relwidth=1, relheight=0.05)
     
 if __name__ == '__main__':
     addEmployee("horst", "maier", 25000, 14, "Tesla")
     
-def createCompany(name, money, hq):
+def createCompany(name, money, hq, canvas):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
 
@@ -106,6 +110,10 @@ def createCompany(name, money, hq):
 
     resources_owned_by_company(idComp)
 
+    color = f"#{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}"
+    checkLabel = tk.Label(canvas, bg=color, text="Firma Hinzugefügt!")
+    checkLabel.place(relx=0, rely=0.95, relwidth=1, relheight=0.05)
+
 def resources_owned_by_company(idComp):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -121,7 +129,7 @@ def resources_owned_by_company(idComp):
         conn.commit()
         print(command)
 
-def createProject(name, returnMoney, difficulty):
+def createProject(name, returnMoney, difficulty, canvas):
     """
     creates Random Projects amount is based on the number of names there are
     id is created trough the name and an id num ex. "pl1015"
@@ -144,6 +152,10 @@ def createProject(name, returnMoney, difficulty):
     print(command)
 
     requiredResourceTable(proid, difficulty)
+
+    color = f"#{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}"
+    checkLabel = tk.Label(canvas, bg=color, text="Projekt Hinzugefügt!")
+    checkLabel.place(relx=0, rely=0.95, relwidth=1, relheight=0.05)
 
 def requiredResourceTable(id, difficulty):
     conn = sqlite3.connect("kw.sql")
