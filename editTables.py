@@ -91,7 +91,8 @@ def addEmployee(firstName, lastName, salary, exp, company, canvas):
     
 if __name__ == '__main__':
     addEmployee("horst", "maier", 25000, 14, "Tesla")
-    
+
+
 def createCompany(name, money, hq, canvas):
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
