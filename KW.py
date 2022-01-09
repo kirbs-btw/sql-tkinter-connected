@@ -54,6 +54,8 @@ def printEmployees(company, frame, canvas):
     :param frame: frame where to display the information
     :return: none it returns the information via the scrollbar in the frame
     """
+    print("hi")
+
     destroyWidget(frame)
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -132,7 +134,7 @@ def printSkill(canvas):
         print(skillCount)
     text = f"Skill:\n{str(skillCount)}"
     skill = tk.Label(canvas, text=text)
-    skill.place(relx=0.3, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
+    skill.place(relx=0.3, rely=0.9, relwidth=0.2, relheight=0.05, anchor='nw')
     pass
 
 def printTableProjects(frame, root):
@@ -176,12 +178,12 @@ def printDiffireq(canvas):
     if table != []:
         text = f"Required Skill: \n{table[0][0]}"
         diffLabel = tk.Label(canvas, text=text)
-        diffLabel.place(relx=0.05, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
+        diffLabel.place(relx=0.05, rely=0.9, relwidth=0.2, relheight=0.05, anchor='nw')
 
         skill = tk.Label(canvas, text = "skill\n0")
-        skill.place(relx=0.3, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
+        skill.place(relx=0.3, rely=0.9, relwidth=0.2, relheight=0.05, anchor='nw')
 
-def doProject(canvas, company):
+def doProject(canvas, company, frameScrollOut):
     """
     does the project
     looks at the resource of the company and the skill of the employees
@@ -236,6 +238,9 @@ def doProject(canvas, company):
 
     # deleting the resources required from the resources_owned_by_company table
     for i in resourcesRequired:
+        text = f"Removed {i[1]} {i[2]} from {companyName}"
+        tk.Label(frameScrollOut, text=text, justify="left").pack()
+
         print(i)
         newResource = companyResource[j][2] - i[2]
         command = f"UPDATE resources_owned_by_company SET amount = {newResource} WHERE company_id LIKE '{companyResource[j][0]}' AND resource_id LIKE '{i[1]}'"
@@ -256,6 +261,10 @@ def doProject(canvas, company):
     command = f"UPDATE company SET money = {addedMoney} WHERE name = '{companyName}'"
     cur.execute(command)
     conn.commit()
+
+    #Consol out
+    text = f"Current Company Money: {companyMoney[0][3]}\nNew Money: {round(addedMoney, 2)}"
+    tk.Label(frameScrollOut, text=text, justify="left").pack()
 
     # deleting the project
 
@@ -327,7 +336,6 @@ def mainWindow():
     root.iconbitmap("gui/kw.ico")
 
     #images
-    refreshImg = tk.PhotoImage(file='gui/refresh.png')
     kw = tk.PhotoImage(file='gui/kw.png')
 
 
@@ -339,10 +347,6 @@ def mainWindow():
 
     canvas.create_text(130, 185, text="Angestellten Tabelle", font=(None, 15), anchor="n")
 
-
-    refreshButton = tk.Button(canvas, image=refreshImg, borderwidth=0, bg='#ffffff', command = lambda: printEmployees(selectedCompany.get(), frameScroll, canvas))
-    refreshButton.place(relx=0.5, rely=0.15, relwidth=0.048, relheight=0.048, anchor="nw")
-
     # drop down employee#####################
     # bsp list eig list wird abfrage einer sql tabelle
     projectsWindowButton = tk.Button(canvas, command = lambda: openProjectsWindow(root), text = "Choose project")
@@ -352,15 +356,9 @@ def mainWindow():
     #drop down Firma#####################
     #bsp list eig list wird abfrage einer sql tabelle
     #companyList = lib-kw.getCompanies()
-    companyList = getCompanyList()
 
-    #Variable, die immer der gleichen Wert haben soll, wie das, was im Menü ausgewählt ist
-    selectedCompany = tk.StringVar(canvas)
-    selectedCompany.set(companyList[0])
 
-    #Hier kommt das eigentliche Menü, wird mit dem fenster und der Variable ausgewaehlt verknüpft
-    companyDropdown = tk.OptionMenu(root, selectedCompany, *companyList)
-    companyDropdown.place(relx = 0.05, rely=0.15, relwidth=0.2, relheight=0.05)
+
 
     #############################################################
 
@@ -386,10 +384,31 @@ def mainWindow():
     canvas1.create_window((0, 0), window=frameScroll, anchor="nw")
     ##############################################################
 
+    #### scrollbar stuff - consol out#############################
+    tableOut = tk.Canvas(canvas, bg="black")
+    tableOut.place(relx=0.05, rely=0.65, relwidth=0.9, relheight=0.2, anchor='nw')
+
+    mainFrameOut = tk.Frame(tableOut, bg="#ffffff")
+    mainFrameOut.pack(fill='both', expand=1)
+    # canvas
+    canvasOut = tk.Canvas(mainFrameOut)
+    canvasOut.pack(side='left', fill='both', expand=1)
+    # scrollbar
+    canvScrollOut = ttk.Scrollbar(mainFrameOut, orient='vertical', command=canvasOut.yview)
+    canvScrollOut.pack(side='right', fill='y')
+    # cofig canvas
+    canvasOut.configure(yscrollcommand=canvScrollOut.set)
+    canvasOut.bind('<Configure>', lambda e: canvasOut.configure(scrollregion=canvasOut.bbox("all")))
+
+    frameScrollOut = tk.Frame(canvasOut)
+
+    canvasOut.create_window((0, 0), window=frameScrollOut, anchor="nw")
+    ##############################################################
+
 
     if projectObj.id != None:
-        doProjectButton = tk.Button(canvas, text="execute", command=lambda: doProject(canvas, selectedCompany.get()))
-        doProjectButton.place(relx=0.6, rely=0.8, relwidth=0.2, relheight=0.05, anchor='nw')
+        doProjectButton = tk.Button(canvas, text="execute", command=lambda: doProject(canvas, selectedCompany.get(), frameScrollOut))
+        doProjectButton.place(relx=0.6, rely=0.9, relwidth=0.2, relheight=0.05, anchor='nw')
 
 
     #add mitarbeiter
@@ -401,11 +420,25 @@ def mainWindow():
 
     printDiffireq(canvas)
 
+    # Hier kommt das eigentliche Menü, wird mit dem fenster und der Variable ausgewaehlt verknüpft
+
+    #companyDropdown = tk.OptionMenu(root, selectedCompany, *companyList, command=printEmployees(selectedCompany.get(), frameScroll, canvas))
+    companyList = getCompanyList()
+
+    selectedCompany = tk.StringVar(canvas)
+    selectedCompany.set(companyList[0])
+
+    companyDropdown = tk.OptionMenu(root, selectedCompany, *companyList, command=lambda m: printEmployees(m, frameScroll, canvas))
+    companyDropdown.place(relx=0.05, rely=0.15, relwidth=0.2, relheight=0.05)
+
     printEmployees(selectedCompany.get(), frameScroll, canvas)
 
     root.mainloop()
 
-def login(entry, root):
+def printNew(value):
+    print("hi")
+
+def login(entry, root, canvas):
     """
     checks if the password is correct
 
@@ -422,6 +455,8 @@ def login(entry, root):
 
     else:
         print("wrong password")
+        wrongPw = tk.Label(canvas, text="falsches Password", bg="#FF0000")
+        wrongPw.place(relx=0, rely=0.85, relwidth=1, relheight=0.15)
 
 
 #######################################
@@ -448,7 +483,7 @@ def passwordDev():
     passwordInput = tk.Entry(canvas)
     passwordInput.place(relx = 0.1, rely = 0.45)
 
-    loginButton = tk.Button(canvas, text = "login",command = lambda: login(passwordInput.get(), root))
+    loginButton = tk.Button(canvas, text = "login",command = lambda: login(passwordInput.get(), root, canvas))
     loginButton.place(relx = 0.6, rely = 0.45)
 
 
