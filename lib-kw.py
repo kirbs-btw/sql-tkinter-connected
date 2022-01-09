@@ -279,8 +279,7 @@ def createProject():
         returnSalary = 1000 * (1 + (math.sin((0.0025*difficulty) * math.pi))) * 7
         #sin adds a multipier to the base value so salary is based on the difficulty
 
-        print()
-        command = f"INSERT INTO project VALUES('{proid}', '{i}', {difficulty}, {returnSalary} )"
+        command = f"INSERT INTO project VALUES('{proid}', '{i}', {difficulty}, {returnSalary})"
         cur.execute(command)
         conn.commit()
         print(command)
@@ -308,9 +307,9 @@ def resourceTable():
     cur = conn.cursor()
 
     resourceName = [
-        ["coal", 0.15],
-        ["diamond", 36000000],
-        ["silicon", 1.7],
+        ["Coal", 0.15],
+        ["Diamond", 36000000],
+        ["Silicon", 1.7],
         ["Aluminium", 1.8],
         ["Steel", 0.45],
         ["Plastic", 0.0738],
@@ -410,7 +409,7 @@ def restartEverything():
     delTable("resource")
 
     createCompanies()
-    createEmployees(30)
+    createEmployees(50)
     resourceTable()
     createProject()
     requiredResourceTable()
@@ -428,7 +427,7 @@ if __name__ == '__main__':
     #createEmployees(30)
     ### --> cap in copany einführen für unterschiedliche mitarbeiter zahlen
 
-    #checkTable("company")
+    #checkTable("project")
 
     #resourceTable()
     #createProject()
