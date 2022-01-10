@@ -54,7 +54,6 @@ def printEmployees(company, frame, canvas):
     :param frame: frame where to display the information
     :return: none it returns the information via the scrollbar in the frame
     """
-    print("hi")
 
     destroyWidget(frame)
     conn = sqlite3.connect("kw.sql")
@@ -83,7 +82,16 @@ def printTable(frame, table, canvas):
     """
 
     #print(table)
-    f = 0
+    f = 1
+
+    tk.Label(frame, text="Vorname", justify="left").grid(row=f, column=1, pady=10, padx=10, sticky="w")
+    tk.Label(frame, text="Nachname", justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
+    tk.Label(frame, text="Job", justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
+    tk.Label(frame, text="Skill", justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
+
+
+
+    f += 1
     for i in table:
         f += 1
         tk.Label(frame, text=i[0], justify="left").grid(row=f, column=1, pady=10, padx=10, sticky="w")
@@ -143,12 +151,24 @@ def printTableProjects(frame, root):
     command = f"SELECT * FROM project"
     table = cur.execute(command).fetchall()
     conn.close()
-    f = 0
+
+    f = 1
+
+    tk.Label(frame, text="Thema", justify="left").grid(row=f, column=1, pady=10, padx=10, sticky="w")
+    tk.Label(frame, text="Difficulty", justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
+    tk.Label(frame, text="Return", justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
+    tk.Label(frame, text="Id", justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
+
+
+
     for i in table:
         f += 1
+
         tk.Label(frame, text=i[1], justify="left").grid(row=f, column=1, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[2], justify="left").grid(row=f, column=2, pady=10, padx=10, sticky="w")
-        tk.Label(frame, text=round(i[3], 2), justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
+
+        moneyText = f"{round(i[3], 2)} €"
+        tk.Label(frame, text=moneyText, justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
         tk.Label(frame, text=i[0], justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
         tk.Button(frame, text = "Choose Project", justify="left", command = lambda m = i[0]: chooseProject(m, root)).grid(row=f, column=5, pady=10, padx=10, sticky="w")
 
@@ -293,6 +313,8 @@ def openProjectsWindow(root):
 
     root.destroy()
     root = tk.Tk()
+    root.title("Projekte")
+    root.iconbitmap("gui/kw.ico")
 
     canvas = tk.Canvas(root, width=750, height=450, bg='#ffffff')
     canvas.pack()
@@ -352,16 +374,6 @@ def mainWindow():
     projectsWindowButton = tk.Button(canvas, command = lambda: openProjectsWindow(root), text = "Choose project")
     projectsWindowButton.place(relx=0.275, rely=0.15, relwidth=0.2, relheight=0.05, )
     #############################################################
-
-    #drop down Firma#####################
-    #bsp list eig list wird abfrage einer sql tabelle
-    #companyList = lib-kw.getCompanies()
-
-
-
-
-    #############################################################
-
 
     #### scrollbar stuff - employee list#############################
     table = tk.Canvas(canvas, bg="black")
