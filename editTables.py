@@ -172,3 +172,51 @@ def requiredResourceTable(id, difficulty):
         conn.commit()
 
     print("project added :)")
+
+def delCompany(company, canvas):
+    companyName = str()
+
+    # cuts try to cut up - input is weird
+    for i in company:
+        if i == "(" or i == ")" or i == "," or i == "'":
+            pass
+        else:
+            companyName = companyName + i
+
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
+        
+    command = f"SELECT id FROM company WHERE name = '{companyName}'"
+    companyId = cur.execute(command).fetchall()[0][0]
+    
+    command = f"DELETE FROM company WHERE id = '{companyId}'"
+    cur.execute(command)
+    conn.commit()
+    
+    command = f"DELETE FROM employee WHERE company_id = '{companyId}'"
+    cur.execute(command)
+    conn.commit()
+    
+    command = f"DELETE FROM resources_owned_by_company WHERE company_id = '{companyId}'"
+    cur.execute(command)
+    conn.commit()
+    
+    color = f"#{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}"
+    checkLabel = tk.Label(canvas, bg=color, text=f"{companyName} ZERSTÖRT!!")
+    checkLabel.place(relx=0, rely=0.95, relwidth=1, relheight=0.05)
+
+def delTable(table):
+    conn = sqlite3.connect("kw.sql")
+    cur = conn.cursor()
+    command = f"DELETE FROM {table}"
+    cur.execute(command)
+    conn.commit()
+    conn.close()
+
+def ende():
+    delTable("employee")
+    delTable("company")
+    delTable("project")
+    delTable("required_resources")
+    delTable("resources_owned_by_company")
+    delTable("resource")
