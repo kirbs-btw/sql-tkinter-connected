@@ -24,9 +24,7 @@ def getCompanyList():
     """
     gets the company list for the dropdown menu and other
     applictions
-
     used sql table is kw.sql
-
     :return: company table as 2d array
     """
 
@@ -89,8 +87,6 @@ def printTable(frame, table, canvas):
     tk.Label(frame, text="Job", justify="left").grid(row=f, column=3, pady=10, padx=10, sticky="w")
     tk.Label(frame, text="Skill", justify="left").grid(row=f, column=4, pady=10, padx=10, sticky="w")
 
-
-
     f += 1
     for i in table:
         f += 1
@@ -103,7 +99,6 @@ def printTable(frame, table, canvas):
 def collectId(canvas ,f, frame, col):
     """
     collects the id´s of the picked employees
-
     :param f: id of the pickes employee == string with 6 charakters
     :param frame: frame where the buttons are in
     :param col: column of the button
@@ -175,10 +170,8 @@ def printTableProjects(frame, root):
 def chooseProject(projectId, root):
     """
     selected project id gets saved in projectObj for later use
-
     :param projectId: id of the selected Project
     :param root: root of the projects window so it can be closed
-
     opens mainWindow again so you can select a company to do the project for you
     """
 
@@ -208,7 +201,6 @@ def doProject(canvas, company, frameScrollOut):
     does the project
     looks at the resource of the company and the skill of the employees
     to get the result of the project
-
     """
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
@@ -306,7 +298,6 @@ def doProject(canvas, company, frameScrollOut):
 def openProjectsWindow(root):
     """
     the projects window has the purpose to let the user select a project from the list
-
     :param root: root of the previous window - destroys the previous window
     :return: none - return is the window poping up
     """
@@ -346,10 +337,8 @@ def mainWindow():
     """
     main user interface
     used to select companies and employees
-
     also there is a secrete button behind the kw logo :) shhhht
     password = kw
-
     :return: none - return = window poping up for the user
     """
 
@@ -453,7 +442,6 @@ def printNew(value):
 def login(entry, root, canvas):
     """
     checks if the password is correct
-
     :param entry: password try entry = entry.get() so entry is a string here
     :param root: root of the login window has to be killed if the password is right
     :return: none - return in form of a new window poping up
@@ -474,12 +462,38 @@ def login(entry, root, canvas):
 #######################################
 # Password check for development window
 #######################################
+def confirm(f, canvas):
+    if f == "CONFIRM":
+        editTables.ende()
+        wrongPw = tk.Label(canvas, text="Bye", bg="#90ee90")
+        wrongPw.place(relx=0, rely=0.85, relwidth=1, relheight=0.15)
+        print("bye <3")
+
+def confimWindow():
+    root = tk.Tk()
+    root.title("Confirm")
+    root.iconbitmap("gui/kw.ico")
+
+    canvas = tk.Canvas(root, width=300, height=150)
+    canvas.pack()
+
+    canvas.create_text(105, 50, text="Confirm ? (write CONFIRM)", font=(None, 10), anchor="n")
+
+    passwordInput = tk.Entry(canvas)
+    passwordInput.place(relx = 0.1, rely = 0.45)
+
+    loginButton = tk.Button(canvas, text = "CONFIRM",command = lambda: confirm(passwordInput.get(), canvas))
+    loginButton.place(relx = 0.6, rely = 0.45)
+
+
+    root.mainloop()
+
+
 
 def passwordDev():
     """
     creates login window for the development terminal
     access only via correct password
-
     :return: none - returns a login window
     """
 
@@ -506,7 +520,9 @@ def executeSqlCommand(command):
     :param command: sql command a string
     :return: return is printed in the console by now
     """
-
+    if command == "ende":
+        confimWindow()
+    
     conn = sqlite3.connect("kw.sql")
     cur = conn.cursor()
     table = cur.execute(command).fetchall()
@@ -519,7 +535,6 @@ def devWindow():
     """
     creates a development window with a sql terminal and other
     useful elements - comming soon
-
     :return: none - returns a window for the user
     """
     
@@ -618,7 +633,24 @@ def devWindow():
 
     addCompanyButton = tk.Button(canvas, text="Hinzufügen",command=lambda: editTables.createCompany(compNameInput.get(), compMoneyInput.get(), compHqInput.get(), canvas))
     addCompanyButton.place(relx=0.73, rely=0.555, relwidth=inputWidth, relheight=inputHeight)
+    
+    # delete company
+    #dropdown companylist
+    companyListToDest = getCompanyList() 
 
+    #Variable, die immer der gleichen Wert haben soll, wie das, was im Menü ausgewählt ist
+    selectedCompanyDest = tk.StringVar(canvas)
+    selectedCompanyDest.set(companyListToDest[0])
+
+    #Hier kommt das eigentliche Menü, wird mit dem fenster und der Variable ausgewaehlt verknüpft
+    companyDropdownDest = tk.OptionMenu(root, selectedCompanyDest, *companyListToDest)
+    companyDropdownDest.place(relx=0.73, rely=0.65, relwidth=inputWidth, relheight=inputHeight)
+    
+    
+    
+    delCompanyButton = tk.Button(canvas, text="ZERSTÖREN", command=lambda: editTables.delCompany(selectedCompanyDest.get(), canvas))
+    delCompanyButton.place(relx=0.73, rely=0.7, relwidth=inputWidth, relheight=inputHeight)
+    
     root.mainloop()
 
 
