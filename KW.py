@@ -79,7 +79,6 @@ def printTable(frame, table, canvas):
     :return: Nothing - returns the values inside the scrollbar table
     """
 
-    #print(table)
     f = 1
 
     tk.Label(frame, text="Vorname", justify="left").grid(row=f, column=1, pady=10, padx=10, sticky="w")
@@ -104,21 +103,6 @@ def collectId(canvas ,f, frame, col):
     :param col: column of the button
     :return: none prints results in employeeObj as a list ( employeeObj.employee.append(f) )
     """
-
-    # deletes the button of the pick employee
-    #
-    # bug after the first button is deleted the next shifts wrongly
-    #buttonNum = 0
-    #done = True
-    #widgets = frame.winfo_children()
-    #for widget in widgets:
-    #    if type(widget) == type(tk.Button()):
-    #        buttonNum += 1
-    #    if buttonNum == col and done:
-    #        widget.destroy()
-    #        done = False
-
-    # trying to disable a button if used
 
     employeeObj.employee.append(f)
     printSkill(canvas)
@@ -178,7 +162,6 @@ def chooseProject(projectId, root):
     projectObj.id = projectId
     employeeObj.employee = []
     root.destroy()
-    #print(projectObj.id)
     mainWindow()
 
 def printDiffireq(canvas):
@@ -246,7 +229,6 @@ def doProject(canvas, company, frameScrollOut):
 
 
     j = 0
-    # print(companyResource)
 
     # deleting the resources required from the resources_owned_by_company table
     for i in resourcesRequired:
@@ -648,7 +630,7 @@ def devWindow():
     
     
     
-    delCompanyButton = tk.Button(canvas, text="ZERSTÖREN", command=lambda: editTables.delCompany(selectedCompanyDest.get(), canvas))
+    delCompanyButton = tk.Button(canvas, text="entfernen", command=lambda: editTables.delCompany(selectedCompanyDest.get(), canvas))
     delCompanyButton.place(relx=0.73, rely=0.7, relwidth=inputWidth, relheight=inputHeight)
     
     root.mainloop()
@@ -659,8 +641,6 @@ if __name__ == '__main__':
 
     # password to dev Window is = kw
 
-    #devWindow()
-
 #Sql, py project - connect python GUI with sql data base
-#
-#Bastian Lipka -
+
+#Bastian Lipka - Sebastian Lindenblatt
